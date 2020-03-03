@@ -63,7 +63,6 @@ let dragEndVarY = 0;
 
 function dragVerticalStart(e) {
   e = e || window.event;
-  e.stopPropagation();
 
   carousel.addEventListener('touchmove', dragVerticalMove);
 
@@ -71,13 +70,11 @@ function dragVerticalStart(e) {
 }
 
 function dragVerticalMove(e) {
-  e.stopPropagation();
   e = e || window.event;
   dragEndVarY = e.targetTouches[0].screenY;
 }
 
 function dragVerticalEnd(e) {
-  e.stopPropagation();
   e = e || window.event;
   if( dragStartVarY > dragEndVarY ) {
 
@@ -126,6 +123,25 @@ function scrollMove(e) {
   oldZone = newZone;
 }
 
+function scrollMoveTouch(e) {
+  let x2 = e.changedTouches[0].pageX;
+  let thumbLeft = Math.min(range.offsetWidth - thumb.offsetWidth, Math.max(-1, x + x2 - x1));
+
+  thumbLeft = Math.min(range.offsetWidth - thumb.offsetWidth, Math.max(-1, x + x2 - x1));
+
+  if ( (thumbLeft >= 0) && (thumbLeft < range.offsetWidth) ) {
+    thumb.style.left = thumbLeft + 'px';
+  }
+
+  newZone = Math.floor(thumb.style.left.slice(0, -2) / betweenRangeItems);
+
+  if (newZone != oldZone) {
+    slideRight(newZone);
+  }
+
+  oldZone = newZone;
+}
+
 let leftWrapper = 0;
 let activeItemHor = 0;
 let widthItem = document.querySelector('.horizontal-carousel-item').offsetWidth;
@@ -137,7 +153,6 @@ function slideRight(zone) {
 }
 
 thumb.addEventListener('mousedown', function(e) {
-  thumb.style.transition = '0s all';
   x = thumb.offsetLeft;
   x1 = e.pageX;
   document.addEventListener('mousemove', scrollMove);
@@ -150,21 +165,23 @@ thumb.addEventListener('mousedown', function(e) {
 
 thumb.addEventListener('touchstart', function(e) {
   e.stopPropagation();
+  carousel.removeEventListener('touchend', dragVerticalEnd);
+  thumb.style.transition = 'all 0s';
   x = thumb.offsetLeft;
-  x1 = e.pageX;
-  document.addEventListener('touchmove', scrollMove);
+  x1 = e.changedTouches[0].pageX;
+  document.addEventListener('touchmove', scrollMoveTouch);
 
   document.addEventListener('touchend', function(e) {
-    document.removeEventListener('touchmove', scrollMove);
+    document.removeEventListener('touchmove', scrollMoveTouch);
     setThumb();
+    carousel.addEventListener('touchend', dragVerticalEnd);
   });
 });
 
 function setThumb() {
-  thumb.style.transition = '0.2s all';
   switch(oldZone) {
     case 0:
-      thumb.style.left = '-13px';
+      thumb.style.left = '-25px';
     break;
 
     case (countHorizontalItem - 1):
