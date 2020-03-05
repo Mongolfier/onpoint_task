@@ -122,6 +122,12 @@ body {
   z-index: 999;
 }
 
+.color-range {
+  height: 100%;
+  position: relative;
+  left: 0;
+}
+
 .thumb {
   position: absolute;
   box-sizing: border-box;

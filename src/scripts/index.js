@@ -6,7 +6,6 @@ let carousel = document.querySelector('.carousel');
 let wrapperItem = document.querySelector('.vertical-carousel-wrapper');
 let heightItem = document.querySelector('.vertical-carousel-item').offsetHeight;
 let countVerticalItem = document.querySelectorAll('.vertical-carousel-item').length;
-let dots; //
 
 let topWrapper = 0;
 let activeItem = 0;
@@ -16,13 +15,11 @@ let activeItem = 0;
     let newSpan = document.createElement('span');
     document.querySelector('.dots').appendChild(newSpan);
   }
-  dots = document.querySelectorAll('span');
   document.querySelector('span').setAttribute('class', 'active');
 })();
 
 carousel.addEventListener('wheel', function(e) {
   e = e || window.event;
-  e.preventDefault();
 
   if (e.deltaY > 0) {
 
@@ -39,43 +36,16 @@ carousel.addEventListener('wheel', function(e) {
   }
 });
 
-carousel.addEventListener('touchstart', dragVerticalStart);
-carousel.addEventListener('touchend', dragVerticalEnd);
-
-function slideUp() {
-  topWrapper += -heightItem;
-  wrapperItem.style.top = topWrapper + 'px';
-  activeItem = -(topWrapper / heightItem);
-  dots[activeItem-1].classList.remove('active');
-  dots[activeItem].classList.add('active');
-}
-
-function slideDown() {
-  topWrapper -= -heightItem;
-  wrapperItem.style.top = topWrapper + 'px';
-  activeItem = -(topWrapper / heightItem);
-  dots[activeItem+1].classList.remove('active');
-  dots[activeItem].classList.add('active');
-}
-
-let dragStartVarY = 0;
-let dragEndVarY = 0;
-
-function dragVerticalStart(e) {
+carousel.addEventListener('touchstart', function(e) {
   e = e || window.event;
 
   carousel.addEventListener('touchmove', dragVerticalMove);
 
   dragStartVarY = e.targetTouches[0].screenY;
-}
+});
 
-function dragVerticalMove(e) {
-  e = e || window.event;
-  dragEndVarY = e.targetTouches[0].screenY;
-}
-
-function dragVerticalEnd(e) {
-  e = e || window.event;
+carousel.addEventListener('touchend', function(e) {
+   e = e || window.event;
   if( dragStartVarY > dragEndVarY ) {
 
     if ( topWrapper > -( heightItem * (countVerticalItem - 1) ) ) {
@@ -90,6 +60,30 @@ function dragVerticalEnd(e) {
 
   }
   carousel.removeEventListener('touchmove', dragVerticalMove);
+});
+
+function slideUp() {
+  topWrapper += -heightItem;
+  wrapperItem.style.top = topWrapper + 'px';
+  activeItem = -(topWrapper / heightItem);
+  document.querySelectorAll('span')[activeItem-1].classList.remove('active');
+  document.querySelectorAll('span')[activeItem].classList.add('active');
+}
+
+function slideDown() {
+  topWrapper -= -heightItem;
+  wrapperItem.style.top = topWrapper + 'px';
+  activeItem = -(topWrapper / heightItem);
+  document.querySelectorAll('span')[activeItem+1].classList.remove('active');
+  document.querySelectorAll('span')[activeItem].classList.add('active');
+}
+
+let dragStartVarY = 0;
+let dragEndVarY = 0;
+
+function dragVerticalMove(e) {
+  e = e || window.event;
+  dragEndVarY = e.targetTouches[0].screenY;
 }
 
 let range = document.querySelector('.range');
@@ -106,9 +100,10 @@ let newZone = 0;
 
 function scrollMove(e) {
   let x2 = e.pageX;
-  let thumbLeft = Math.min(range.offsetWidth - thumb.offsetWidth, Math.max(-1, x + x2 - x1));
 
-  thumbLeft = Math.min(range.offsetWidth - thumb.offsetWidth, Math.max(-1, x + x2 - x1));
+  if(e.pageX === undefined) x2 = e.changedTouches[0].pageX;
+
+  let thumbLeft = Math.min(range.offsetWidth - thumb.offsetWidth, Math.max(-1, x + x2 - x1));
 
   if ( (thumbLeft >= 0) && (thumbLeft < range.offsetWidth) ) {
     thumb.style.left = thumbLeft + 'px';
@@ -116,30 +111,11 @@ function scrollMove(e) {
 
   newZone = Math.floor(thumb.style.left.slice(0, -2) / betweenRangeItems);
 
-  if (newZone != oldZone) {
+  if ( (newZone != oldZone) && (newZone >= 0) ) {
     slideRight(newZone);
   }
 
-  oldZone = newZone;
-}
-
-function scrollMoveTouch(e) {
-  let x2 = e.changedTouches[0].pageX;
-  let thumbLeft = Math.min(range.offsetWidth - thumb.offsetWidth, Math.max(-1, x + x2 - x1));
-
-  thumbLeft = Math.min(range.offsetWidth - thumb.offsetWidth, Math.max(-1, x + x2 - x1));
-
-  if ( (thumbLeft >= 0) && (thumbLeft < range.offsetWidth) ) {
-    thumb.style.left = thumbLeft + 'px';
-  }
-
-  newZone = Math.floor(thumb.style.left.slice(0, -2) / betweenRangeItems);
-
-  if (newZone != oldZone) {
-    slideRight(newZone);
-  }
-
-  oldZone = newZone;
+  if(newZone >= 0) oldZone = newZone;
 }
 
 let leftWrapper = 0;
@@ -165,16 +141,20 @@ thumb.addEventListener('mousedown', function(e) {
 
 thumb.addEventListener('touchstart', function(e) {
   e.stopPropagation();
-  carousel.removeEventListener('touchend', dragVerticalEnd);
+
+  carousel.removeEventListener('touchend', function(e){});
+
   thumb.style.transition = 'all 0s';
   x = thumb.offsetLeft;
   x1 = e.changedTouches[0].pageX;
-  document.addEventListener('touchmove', scrollMoveTouch);
+  document.addEventListener('touchmove', scrollMove);
 
   document.addEventListener('touchend', function(e) {
-    document.removeEventListener('touchmove', scrollMoveTouch);
+    document.removeEventListener('touchmove', scrollMove);
     setThumb();
-    carousel.addEventListener('touchend', dragVerticalEnd);
+
+    carousel.addEventListener('touchend', function(e){});
+
   });
 });
 
