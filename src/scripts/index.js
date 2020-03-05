@@ -1,90 +1,92 @@
+import './script';
+
 import '../styles/index.scss';
 
-"use strict";
+// "use strict";
 
-let carousel = document.querySelector('.carousel');
-let wrapperItem = document.querySelector('.vertical-carousel-wrapper');
-let heightItem = document.querySelector('.vertical-carousel-item').offsetHeight;
-let countVerticalItem = document.querySelectorAll('.vertical-carousel-item').length;
+// let carousel = document.querySelector('.carousel');
+// let wrapperItem = document.querySelector('.vertical-carousel-wrapper');
+// let heightItem = document.querySelector('.vertical-carousel-item').offsetHeight;
+// let countVerticalItem = document.querySelectorAll('.vertical-carousel-item').length;
 
-let topWrapper = 0;
-let activeItem = 0;
+// let topWrapper = 0;
+// let activeItem = 0;
 
-(function makeSpan() {
-  for (let i = 0; i < countVerticalItem; i++) {
-    let newSpan = document.createElement('span');
-    document.querySelector('.dots').appendChild(newSpan);
-  }
-  document.querySelector('span').setAttribute('class', 'active');
-})();
+// (function makeSpan() {
+//   for (let i = 0; i < countVerticalItem; i++) {
+//     let newSpan = document.createElement('span');
+//     document.querySelector('.dots').appendChild(newSpan);
+//   }
+//   document.querySelector('span').setAttribute('class', 'active');
+// })();
 
-carousel.addEventListener('wheel', function(e) {
-  e = e || window.event;
+// carousel.addEventListener('wheel', function(e) {
+//   e = e || window.event;
 
-  if (e.deltaY > 0) {
+//   if (e.deltaY > 0) {
 
-    if ( topWrapper > -( heightItem * (countVerticalItem - 1) ) ) {
-      slideUp();
-    }
+//     if ( topWrapper > -( heightItem * (countVerticalItem - 1) ) ) {
+//       slideUp();
+//     }
 
-  } else {
+//   } else {
 
-    if ( topWrapper != 0 ) {
-      slideDown();
-    }
+//     if ( topWrapper != 0 ) {
+//       slideDown();
+//     }
 
-  }
-});
+//   }
+// });
 
-carousel.addEventListener('touchstart', function(e) {
-  e = e || window.event;
+// carousel.addEventListener('touchstart', function(e) {
+//   e = e || window.event;
 
-  carousel.addEventListener('touchmove', dragVerticalMove);
+//   carousel.addEventListener('touchmove', dragVerticalMove);
 
-  dragStartVarY = e.targetTouches[0].screenY;
-});
+//   dragStartVarY = e.targetTouches[0].screenY;
+// });
 
-carousel.addEventListener('touchend', function(e) {
-   e = e || window.event;
-  if( dragStartVarY > dragEndVarY ) {
+// carousel.addEventListener('touchend', function(e) {
+//    e = e || window.event;
+//   if( dragStartVarY > dragEndVarY ) {
 
-    if ( topWrapper > -( heightItem * (countVerticalItem - 1) ) ) {
-      slideUp();
-    }
+//     if ( topWrapper > -( heightItem * (countVerticalItem - 1) ) ) {
+//       slideUp();
+//     }
 
-  } else {
+//   } else {
 
-    if ( topWrapper != 0 ) {
-      slideDown();
-    }
+//     if ( topWrapper != 0 ) {
+//       slideDown();
+//     }
 
-  }
-  carousel.removeEventListener('touchmove', dragVerticalMove);
-});
+//   }
+//   carousel.removeEventListener('touchmove', dragVerticalMove);
+// });
 
-function slideUp() {
-  topWrapper += -heightItem;
-  wrapperItem.style.top = topWrapper + 'px';
-  activeItem = -(topWrapper / heightItem);
-  document.querySelectorAll('span')[activeItem-1].classList.remove('active');
-  document.querySelectorAll('span')[activeItem].classList.add('active');
-}
+// function slideUp() {
+//   topWrapper += -heightItem;
+//   wrapperItem.style.top = topWrapper + 'px';
+//   activeItem = -(topWrapper / heightItem);
+//   document.querySelectorAll('span')[activeItem-1].classList.remove('active');
+//   document.querySelectorAll('span')[activeItem].classList.add('active');
+// }
 
-function slideDown() {
-  topWrapper -= -heightItem;
-  wrapperItem.style.top = topWrapper + 'px';
-  activeItem = -(topWrapper / heightItem);
-  document.querySelectorAll('span')[activeItem+1].classList.remove('active');
-  document.querySelectorAll('span')[activeItem].classList.add('active');
-}
+// function slideDown() {
+//   topWrapper -= -heightItem;
+//   wrapperItem.style.top = topWrapper + 'px';
+//   activeItem = -(topWrapper / heightItem);
+//   document.querySelectorAll('span')[activeItem+1].classList.remove('active');
+//   document.querySelectorAll('span')[activeItem].classList.add('active');
+// }
 
-let dragStartVarY = 0;
-let dragEndVarY = 0;
+// let dragStartVarY = 0;
+// let dragEndVarY = 0;
 
-function dragVerticalMove(e) {
-  e = e || window.event;
-  dragEndVarY = e.targetTouches[0].screenY;
-}
+// function dragVerticalMove(e) {
+//   e = e || window.event;
+//   dragEndVarY = e.targetTouches[0].screenY;
+// }
 
 let range = document.querySelector('.range');
 let widthRange = range.offsetWidth;
@@ -129,6 +131,7 @@ function slideRight(zone) {
 }
 
 thumb.addEventListener('mousedown', function(e) {
+  thumb.style.transition = 'all 0s';
   x = thumb.offsetLeft;
   x1 = e.pageX;
   document.addEventListener('mousemove', scrollMove);
@@ -158,18 +161,19 @@ thumb.addEventListener('touchstart', function(e) {
   });
 });
 
-function setThumb() {
-  switch(oldZone) {
-    case 0:
-      thumb.style.left = '-25px';
-    break;
+// function setThumb() {
+//   switch(oldZone) {
+//     case 0:
+//       thumb.style.left = '-25px';
+//     break;
 
-    case (countHorizontalItem - 1):
-      thumb.style.left = widthRange - 30 + 'px';
-    break;
+//     case (countHorizontalItem - 1):
+//       thumb.style.left = widthRange - 30 + 'px';
+//     break;
 
-    default:
-      thumb.style.left = oldZone * betweenRangeItems + betweenRangeItems/2 - 22 + 'px';
-    break;
-  }
-}
+//     default:
+//       thumb.style.left = oldZone * betweenRangeItems + betweenRangeItems/2 - 22 + 'px';
+//     break;
+//   }
+//   thumb.style.transition = 'all 0.2s';
+// }
