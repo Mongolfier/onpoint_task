@@ -1,19 +1,17 @@
 'use strict';
 
-// import thumb from 'thumb.js';
-import VerticalCarousel from './verticalCarousel.js';
+import verticalCarousel from './verticalCarousel.js';
+import horizontalCarousel from './horizontalCarousel.js';
 class App {
   constructor () {
-    this.body = document.querySelector('body');
   }
 
   run() {
     try {
-      // new thumb();
-      new VerticalCarousel();
+      new verticalCarousel();
+      new horizontalCarousel();
     } catch (err) {
-      console.log('core-error', `App run`);
-      console.log(err);
+      console.log('core-error', `App run`, err);
     }
   }
 }

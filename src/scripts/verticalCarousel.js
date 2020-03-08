@@ -1,6 +1,6 @@
 'use strict';
 
-export default class VerticalCarousel {
+export default class verticalCarousel {
   constructor () {
     this.carousel = document.querySelector('.carousel');
     this.wrapperItem = document.querySelector('.vertical-carousel-wrapper');
@@ -53,7 +53,9 @@ export default class VerticalCarousel {
   }
 
   _addTouchMoveEvent () {
-
+    this.carousel.addEventListener('touchmove', e => {
+      this.dragEndVarY = e.targetTouches[0].screenY;
+    });
   }
 
   _addTouchEndEvent () {
@@ -88,3 +90,5 @@ export default class VerticalCarousel {
     document.querySelectorAll('span')[this.activeItem].classList.add('active');
   }
 }
+
+export let carousel;
