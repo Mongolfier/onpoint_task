@@ -48,7 +48,7 @@ export default class verticalCarousel {
 
   _addTouchStartEvent () {
     this.carousel.addEventListener('touchstart', e => {
-      this.dragEndVarY = e.targetTouches[0].screenY;
+      this.dragStartVarY = e.targetTouches[0].screenY;
     });
   }
 
